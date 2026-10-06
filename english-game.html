@@ -1,0 +1,919 @@
+<title>מסע האנגלית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Heebo:wght@400;500;700&family=Andika:ital,wght@0,400;0,700&display=swap">
+
+<style>
+:root{
+  --ground:#EFF3FB; --surface:#FFFFFF; --surface-2:#F6F8FE;
+  --ink:#19223F; --muted:#5E6A8E; --line:#DCE3F2; --lock:#C3CCE2;
+  --sky:#3C9DF2; --mint:#19BFA3; --sun:#FFB726; --violet:#7A5CFF; --coral:#FF5C8A;
+  --ok:#1FA971; --ok-soft:#E4F7EE; --no:#E8454F; --no-soft:#FDEAEB;
+  --star:#FFC231; --star-off:#D3DAEA;
+  --drop:rgba(25,34,63,.16);
+  --r-lg:26px; --r-md:18px; --r-sm:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#121A30; --surface:#1C2643; --surface-2:#232F52;
+    --ink:#EAEFFC; --muted:#9AA7CB; --line:#2E3B60; --lock:#3A4870;
+    --sky:#4FA8F7; --mint:#2BD0B2; --sun:#FFC24D; --violet:#8E73FF; --coral:#FF7AA0;
+    --ok:#2FC98C; --ok-soft:#133A2D; --no:#FF6B73; --no-soft:#3C1D22;
+    --star:#FFCB4D; --star-off:#3A4870; --drop:rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121A30; --surface:#1C2643; --surface-2:#232F52;
+  --ink:#EAEFFC; --muted:#9AA7CB; --line:#2E3B60; --lock:#3A4870;
+  --sky:#4FA8F7; --mint:#2BD0B2; --sun:#FFC24D; --violet:#8E73FF; --coral:#FF7AA0;
+  --ok:#2FC98C; --ok-soft:#133A2D; --no:#FF6B73; --no-soft:#3C1D22;
+  --star:#FFCB4D; --star-off:#3A4870; --drop:rgba(0,0,0,.45);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Heebo","Arial Hebrew",system-ui,sans-serif;font-size:16px;line-height:1.5;
+  overflow-x:hidden;-webkit-text-size-adjust:100%
+}
+button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer;text-align:inherit}
+.en{font-family:"Andika","Comic Sans MS",system-ui,sans-serif;direction:ltr;unicode-bidi:isolate}
+#app{direction:rtl;max-width:780px;margin:0 auto;padding-inline:16px;padding-block:14px 34px;min-height:100vh}
+
+/* ---------- bars ---------- */
+.bar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.bar h1{font-family:"Fredoka","Heebo",sans-serif;font-weight:600;font-size:clamp(21px,5.6vw,29px);margin:0;flex:1;letter-spacing:-.01em;text-wrap:balance}
+.bar h1 small{display:block;font-size:14px;font-weight:400;color:var(--muted);font-family:"Heebo",sans-serif;letter-spacing:0}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:6px 13px;font-weight:700;font-size:15px;font-variant-numeric:tabular-nums;flex:none}
+.chip b{color:var(--star)}
+.iconbtn{width:44px;height:44px;border-radius:14px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;font-size:20px;flex:none}
+.iconbtn:active{transform:translateY(2px)}
+
+/* ---------- home: chapters ---------- */
+.chapters{display:flex;flex-direction:column;gap:14px}
+.chap{
+  --c:var(--sky);
+  display:flex;align-items:center;gap:14px;width:100%;
+  background:var(--surface);border:3px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:0 7px 0 var(--drop);padding:14px 16px
+}
+.chap.open{border-color:var(--c)}
+.chap.locked{opacity:.6;box-shadow:none;pointer-events:none}
+.chap:active{transform:translateY(4px);box-shadow:0 3px 0 var(--drop)}
+.chap .ico{width:62px;height:62px;border-radius:22px;background:var(--c);display:grid;place-items:center;font-size:30px;flex:none}
+.chap.locked .ico{background:var(--lock)}
+.chap .txt{flex:1;min-width:0}
+.chap h3{margin:0;font-family:"Fredoka","Heebo",sans-serif;font-weight:600;font-size:19px}
+.chap p{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.track{height:9px;border-radius:999px;background:var(--line);margin-top:9px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--c);border-radius:999px}
+.pct{font-size:13px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+
+/* ---------- letters grid ---------- */
+.grid26{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:11px}
+.ltile{
+  background:var(--surface);border:3px solid var(--line);border-radius:20px;
+  box-shadow:0 6px 0 var(--drop);padding:10px 4px 8px;display:grid;place-items:center;gap:2px
+}
+.ltile.done{border-color:var(--mint)}
+.ltile.now{border-color:var(--sky)}
+.ltile.locked{opacity:.5;box-shadow:none;pointer-events:none}
+.ltile .pair{font-size:26px;font-weight:700;line-height:1.1}
+.ltile .mini{font-size:12px;letter-spacing:1px;color:var(--star-off)}
+.ltile .mini i{font-style:normal}
+.ltile .mini i.on{color:var(--star)}
+.ltile:active{transform:translateY(3px);box-shadow:0 3px 0 var(--drop)}
+
+/* ---------- lesson list ---------- */
+.lessons{display:flex;flex-direction:column;gap:12px}
+.lrow{
+  --c:var(--sky);display:flex;align-items:center;gap:13px;width:100%;
+  background:var(--surface);border:3px solid var(--line);border-radius:var(--r-md);
+  box-shadow:0 6px 0 var(--drop);padding:12px 14px
+}
+.lrow.done{border-color:var(--c)}
+.lrow.locked{opacity:.55;box-shadow:none;pointer-events:none}
+.lrow:active{transform:translateY(3px);box-shadow:0 3px 0 var(--drop)}
+.lrow .ico{width:52px;height:52px;border-radius:18px;background:var(--surface-2);display:grid;place-items:center;font-size:25px;flex:none}
+.lrow h3{margin:0;font-size:17px;font-family:"Fredoka","Heebo",sans-serif;font-weight:600}
+.lrow p{margin:1px 0 0;font-size:13px;color:var(--muted)}
+.lrow .mini{font-size:14px;letter-spacing:1px;color:var(--star-off);flex:none}
+.lrow .mini i{font-style:normal}
+.lrow .mini i.on{color:var(--star)}
+
+/* ---------- learn card ---------- */
+.card{
+  background:var(--surface);border:3px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:0 8px 0 var(--drop);padding:24px 18px 20px;margin-bottom:16px;
+  display:grid;place-items:center;gap:8px;min-height:330px;text-align:center
+}
+.pairbig{font-size:clamp(76px,24vw,124px);font-weight:700;line-height:1;letter-spacing:.06em}
+.pairbig .lo{color:var(--sky)}
+.lname{font-family:"Fredoka","Heebo",sans-serif;font-size:22px;font-weight:600}
+.emoji{font-size:clamp(62px,19vw,96px);line-height:1}
+.wordbig{font-size:clamp(38px,11vw,58px);font-weight:700;line-height:1.1}
+.numbig{font-size:clamp(70px,22vw,110px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.sentbig{font-size:clamp(23px,6.4vw,34px);font-weight:700;line-height:1.3;text-wrap:balance}
+.tr{font-size:clamp(18px,5vw,23px);font-weight:700;color:var(--violet);font-family:"Fredoka","Heebo",sans-serif}
+.he{font-size:clamp(17px,4.6vw,21px);color:var(--muted);font-weight:500;text-wrap:balance}
+.swatch{width:clamp(96px,28vw,140px);height:clamp(96px,28vw,140px);border-radius:34px;border:4px solid var(--line)}
+.speaker{width:104px;height:104px;border-radius:34px;background:var(--sky);color:#fff;display:grid;place-items:center;font-size:44px;box-shadow:0 8px 0 color-mix(in srgb,var(--sky) 62%,#000)}
+.speaker:active{transform:translateY(5px);box-shadow:0 3px 0 color-mix(in srgb,var(--sky) 62%,#000)}
+.speaker.small{width:62px;height:62px;border-radius:21px;font-size:27px;box-shadow:0 5px 0 color-mix(in srgb,var(--sky) 62%,#000)}
+.speaker.small:active{transform:translateY(3px);box-shadow:0 2px 0 color-mix(in srgb,var(--sky) 62%,#000)}
+.navrow{display:flex;gap:10px;align-items:center}
+.navrow .nav{
+  flex:1;background:var(--surface);border:3px solid var(--line);box-shadow:0 5px 0 var(--line);
+  border-radius:var(--r-md);padding:13px;font-weight:700;font-size:17px;text-align:center;
+  font-family:"Fredoka","Heebo",sans-serif
+}
+.navrow .nav:active{transform:translateY(3px);box-shadow:0 2px 0 var(--line)}
+.navrow .nav.main{background:var(--mint);border-color:var(--mint);color:#fff;box-shadow:0 5px 0 color-mix(in srgb,var(--mint) 62%,#000)}
+.navrow .nav.main:active{box-shadow:0 2px 0 color-mix(in srgb,var(--mint) 62%,#000)}
+.navrow .nav[disabled]{opacity:.4;pointer-events:none}
+.counter{text-align:center;color:var(--muted);font-size:14px;font-weight:700;margin:12px 0 0;font-variant-numeric:tabular-nums}
+
+/* ---------- quiz ---------- */
+.playhead{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.dots{display:flex;gap:5px;flex:1;flex-wrap:wrap}
+.dot{height:9px;border-radius:999px;background:var(--line);flex:1;min-width:14px;max-width:30px}
+.dot.hit{background:var(--ok)}
+.dot.miss{background:var(--no)}
+.dot.now{background:var(--ink)}
+.ask{font-family:"Fredoka","Heebo",sans-serif;font-weight:500;font-size:clamp(17px,4.5vw,21px);text-align:center;margin:0 0 12px;text-wrap:balance;color:var(--muted)}
+.stage{background:var(--surface);border:3px solid var(--line);border-radius:var(--r-lg);box-shadow:0 8px 0 var(--drop);padding:20px 16px;margin-bottom:18px;display:grid;place-items:center;gap:8px;min-height:160px;text-align:center}
+.bigletter{font-size:clamp(70px,22vw,110px);font-weight:700;line-height:1}
+.sub{color:var(--muted);font-size:17px;font-weight:500}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+.opts.wide{grid-template-columns:1fr}
+.opt{
+  --c:var(--sky);background:var(--surface);border:3px solid var(--c);border-radius:var(--r-md);
+  box-shadow:0 6px 0 var(--c);min-height:74px;padding:12px 10px;display:grid;place-items:center;
+  font-size:clamp(21px,5.6vw,28px);font-weight:700;overflow-wrap:anywhere;text-align:center
+}
+.opt:nth-child(4n+2){--c:var(--mint)}
+.opt:nth-child(4n+3){--c:var(--sun)}
+.opt:nth-child(4n+4){--c:var(--violet)}
+.opt.letter{font-size:clamp(34px,10vw,46px)}
+.opt.sent{font-size:clamp(15px,4vw,19px);line-height:1.35;min-height:62px}
+.opt:not(.dead):active{transform:translateY(4px);box-shadow:0 2px 0 var(--c)}
+.opt.dead{pointer-events:none}
+.opt.right{--c:var(--ok);background:var(--ok-soft);color:var(--ok);animation:pop .35s ease}
+.opt.wrong{--c:var(--no);background:var(--no-soft);color:var(--no);animation:shake .4s ease}
+.opt.fade{opacity:.38}
+@keyframes pop{0%{transform:scale(1)}45%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.banner{margin-top:14px;border-radius:var(--r-md);padding:12px 16px;text-align:center;font-weight:700;font-size:16.5px;font-family:"Fredoka","Heebo",sans-serif}
+.banner.good{background:var(--ok-soft);color:var(--ok)}
+.banner.bad{background:var(--no-soft);color:var(--no)}
+
+/* ---------- result ---------- */
+.result{text-align:center;padding-top:6px}
+.score{
+  width:clamp(140px,40vw,180px);height:clamp(140px,40vw,180px);border-radius:50%;margin:8px auto 10px;
+  display:grid;place-items:center;background:var(--surface);border:9px solid var(--c,var(--mint));
+  box-shadow:0 8px 0 var(--drop)
+}
+.score b{font-size:clamp(42px,13vw,58px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;font-family:"Fredoka","Heebo",sans-serif}
+.score span{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.bigstars{font-size:clamp(40px,12vw,56px);letter-spacing:6px;color:var(--star-off);margin:2px 0 4px}
+.bigstars i{font-style:normal;display:inline-block}
+.bigstars i.on{color:var(--star);animation:drop .5s cubic-bezier(.2,1.4,.4,1) both}
+.bigstars i.on:nth-child(2){animation-delay:.16s}
+.bigstars i.on:nth-child(3){animation-delay:.32s}
+@keyframes drop{from{transform:translateY(-28px) scale(.4);opacity:0}to{transform:none;opacity:1}}
+.result h2{font-family:"Fredoka","Heebo",sans-serif;font-weight:600;font-size:clamp(23px,6.6vw,32px);margin:4px 0}
+.result > p{color:var(--muted);margin:0 0 18px;font-size:15.5px}
+.review{background:var(--surface);border:3px solid var(--line);border-radius:var(--r-md);padding:12px 14px;margin:0 0 20px;text-align:right}
+.review h4{margin:0 0 9px;font-size:15px;font-family:"Fredoka","Heebo",sans-serif;font-weight:600}
+.review ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.review li{display:flex;align-items:center;gap:9px;font-size:15px;border-top:2px solid var(--line);padding-top:7px}
+.review li:first-child{border-top:0;padding-top:0}
+.review .say{width:36px;height:36px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;font-size:17px;flex:none}
+.review .wen{font-weight:700;font-size:17px}
+.review .whe{color:var(--muted);font-size:14px}
+.actions{display:flex;flex-direction:column;gap:11px;max-width:360px;margin:0 auto}
+.cta{--c:var(--mint);background:var(--c);color:#fff;border-radius:var(--r-md);padding:15px;font-size:18px;font-weight:700;font-family:"Fredoka","Heebo",sans-serif;text-align:center;box-shadow:0 6px 0 color-mix(in srgb,var(--c) 62%,#000)}
+.cta:active{transform:translateY(4px);box-shadow:0 2px 0 color-mix(in srgb,var(--c) 62%,#000)}
+.cta.ghost{background:var(--surface);color:var(--ink);border:3px solid var(--line);box-shadow:0 6px 0 var(--line)}
+.cta.ghost:active{box-shadow:0 2px 0 var(--line)}
+.reset{display:block;margin:26px auto 0;color:var(--muted);font-size:14px;text-decoration:underline}
+
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+#confetti span{position:absolute;width:11px;height:16px;border-radius:3px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(108vh) rotate(720deg)}}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+</style>
+
+<div id="app"></div>
+<div id="confetti" aria-hidden="true"></div>
+
+<script>
+document.documentElement.setAttribute("lang","he");
+document.documentElement.setAttribute("dir","rtl");
+
+/* ========================= תוכן: אותיות ומילים ========================= */
+/* [מילה באנגלית, בעברית, איך אומרים, אימוג'י] */
+
+const ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const LNAME = {A:"אֵיי",B:"בִּי",C:"סִי",D:"דִי",E:"אִי",F:"אֶף",G:"גִ'י",H:"אֵייץ'",I:"אַיי",J:"גֵ'יי",
+K:"קֵיי",L:"אֶל",M:"אֶם",N:"אֶן",O:"אוֹ",P:"פִּי",Q:"קְיוּ",R:"אָר",S:"אֶס",T:"טִי",U:"יוּ",V:"וִי",
+W:"דַּאבֶּל-יוּ",X:"אֶקְס",Y:"וַואי",Z:"זִי"};
+
+const W = {
+A:[["apple","תפוח","אֶפֶּל","🍎"],["ant","נמלה","אַנְט","🐜"],["arm","זרוע","אַרְם","💪"],["animal","חיה","אָנִימָל","🐘"],["airplane","מטוס","אֶרְפְּלֵיין","✈️"],["alligator","תנין","אָלִיגֵייטוֹר","🐊"],["astronaut","אסטרונאוט","אַסְטְרוֹנוֹט","👨‍🚀"],["art","אומנות","אַרְט","🎨"],["arrow","חץ","אָרוֹ","🏹"],["autumn","סתיו","אוֹטָם","🍂"]],
+B:[["ball","כדור","בּוֹל","⚽"],["book","ספר","בּוּק","📚"],["bus","אוטובוס","בָּאס","🚌"],["bear","דוב","בֵּר","🐻"],["bird","ציפור","בֵּרְד","🐦"],["banana","בננה","בָּנָנָה","🍌"],["bed","מיטה","בֶּד","🛏️"],["boy","ילד","בּוֹי","👦"],["bag","תיק","בֶּג","🎒"],["bee","דבורה","בִּי","🐝"]],
+C:[["cat","חתול","קָאט","🐱"],["car","מכונית","קָאר","🚗"],["cake","עוגה","קֵייק","🎂"],["cow","פרה","קָאו","🐮"],["cup","כוס","קָאפ","☕"],["clock","שעון","קְלוֹק","🕐"],["cloud","ענן","קְלָאוּד","☁️"],["cookie","עוגייה","קוּקִי","🍪"],["crab","סרטן","קְרָאב","🦀"],["candy","סוכרייה","קֶנְדִי","🍬"]],
+D:[["dog","כלב","דוֹג","🐶"],["duck","ברווז","דָאק","🦆"],["door","דלת","דוֹר","🚪"],["doll","בובה","דוֹל","🪆"],["desk","שולחן כתיבה","דֶסְק","🪑"],["dish","צלחת","דִיש","🍽️"],["dolphin","דולפין","דוֹלְפִין","🐬"],["donut","סופגנייה","דוֹנָאט","🍩"],["dragon","דרקון","דְרֶגוֹן","🐉"],["drum","תוף","דְרָאם","🥁"]],
+E:[["egg","ביצה","אֶג","🥚"],["elephant","פיל","אֶלֶפַנְט","🐘"],["eye","עין","אַיי","👁️"],["ear","אוזן","אִיר","👂"],["eight","שמונה","אֵייט","8️⃣"],["earth","כדור הארץ","אֶרְת'","🌍"],["eagle","נשר","אִיגְל","🦅"],["envelope","מעטפה","אֶנְבֶלוֹפּ","✉️"],["exit","יציאה","אֶקְזִיט","🚪"],["elbow","מרפק","אֶלְבּוֹ","💪"]],
+F:[["fish","דג","פִיש","🐟"],["frog","צפרדע","פְרוֹג","🐸"],["flower","פרח","פְלָאוּאֶר","🌸"],["fire","אש","פָייֶר","🔥"],["foot","כף רגל","פוּט","🦶"],["four","ארבע","פוֹר","4️⃣"],["fox","שועל","פוֹקְס","🦊"],["fork","מזלג","פוֹרְק","🍴"],["family","משפחה","פֶמִילִי","👨‍👩‍👧"],["friend","חבר","פְרֶנְד","🤝"]],
+G:[["girl","ילדה","גֶרְל","👧"],["goat","עז","גוֹאוּט","🐐"],["grapes","ענבים","גְרֵייפְּס","🍇"],["green","ירוק","גְרִין","🟢"],["guitar","גיטרה","גִיטָאר","🎸"],["gift","מתנה","גִיפְט","🎁"],["glass","כוס זכוכית","גְלָאס","🥛"],["garden","גינה","גַארְדֶן","🌷"],["ghost","רוח רפאים","גוֹסְט","👻"],["game","משחק","גֵיים","🎲"]],
+H:[["hat","כובע","הָאט","🧢"],["hand","יד","הֶנְד","✋"],["house","בית","הָאוּס","🏠"],["horse","סוס","הוֹרְס","🐴"],["heart","לב","הָארְט","❤️"],["honey","דבש","הָאנִי","🍯"],["hair","שיער","הֶר","💇"],["head","ראש","הֶד","🙂"],["hippo","היפופוטם","הִיפּוֹ","🦛"],["hot","חם","הוֹט","🔥"]],
+I:[["ice","קרח","אַייס","🧊"],["ice cream","גלידה","אַייס-קְרִים","🍦"],["island","אי","אַיילֶנְד","🏝️"],["insect","חרק","אִינְסֶקְט","🐞"],["igloo","איגלו","אִיגְלוּ","🏔️"],["ink","דיו","אִינְק","🖋️"],["iguana","איגואנה","אִיגְוָואנָה","🦎"],["idea","רעיון","אַיידִיאָה","💡"],["in","בתוך","אִין","📦"],["internet","אינטרנט","אִינְטֶרְנֶט","🌐"]],
+J:[["jam","ריבה","גֵ'אם","🍓"],["juice","מיץ","גּ'וּס","🧃"],["jump","לקפוץ","גַ'אמְפּ","🤸"],["jacket","מעיל","גָ'קֶט","🧥"],["jar","צנצנת","גָ'אר","🫙"],["jelly","ג'לי","גֶ'לִי","🍮"],["jeep","ג'יפ","גִ'יפּ","🚙"],["jungle","ג'ונגל","גָ'אנְגֶל","🌴"],["job","עבודה","גּוֹב","💼"],["joke","בדיחה","גוֹק","😂"]],
+K:[["key","מפתח","קִי","🔑"],["king","מלך","קִינְג","👑"],["kite","עפיפון","קָייט","🪁"],["kitchen","מטבח","קִיצֶ'ן","🍳"],["kid","ילד","קִיד","🧒"],["koala","קואלה","קוֹאָלָה","🐨"],["kangaroo","קנגורו","קֶנְגָרוּ","🦘"],["knife","סכין","נַייף","🔪"],["kiss","נשיקה","קִיס","😘"],["ketchup","קטשופ","קֶצָ'אפּ","🍅"]],
+L:[["lion","אריה","לָיוֹן","🦁"],["leg","רגל","לֶג","🦵"],["leaf","עלה","לִיף","🍃"],["lemon","לימון","לֶמוֹן","🍋"],["light","אור","לַייט","💡"],["love","אהבה","לָאב","❤️"],["lamp","מנורה","לֶמְפּ","🪔"],["lake","אגם","לֵייק","🏞️"],["ladder","סולם","לֶדֶר","🪜"],["letter","מכתב","לֶטֶר","✉️"]],
+M:[["moon","ירח","מוּן","🌙"],["mouse","עכבר","מָאוּס","🐭"],["milk","חלב","מִילְק","🥛"],["mom","אמא","מָאם","👩"],["monkey","קוף","מָאנְקִי","🐵"],["mountain","הר","מָאוּנְטֶן","⛰️"],["money","כסף","מָאנִי","💰"],["music","מוזיקה","מְיוּזִיק","🎵"],["map","מפה","מָאפּ","🗺️"],["mouth","פה","מָאוּת'","👄"]],
+N:[["nose","אף","נוֹאוּז","👃"],["nest","קן","נֶסְט","🪺"],["night","לילה","נַייט","🌃"],["nine","תשע","נַיין","9️⃣"],["name","שם","נֵים","🏷️"],["neck","צוואר","נֶק","🧣"],["nurse","אחות רפואית","נֶרְס","👩‍⚕️"],["noodle","אטרייה","נוּדֶל","🍜"],["note","פתק","נוֹאוּט","📝"],["new","חדש","נְיוּ","✨"]],
+O:[["orange","תפוז","אוֹרֶנְג'","🍊"],["owl","ינשוף","אָאוּל","🦉"],["octopus","תמנון","אוֹקְטוֹפּוּס","🐙"],["old","זקן","אוֹלְד","👴"],["open","פתוח","אוֹפֶּן","🚪"],["one","אחת","וָואן","1️⃣"],["ocean","אוקיינוס","אוֹשֶן","🌊"],["onion","בצל","אָנְיוֹן","🧅"],["office","משרד","אוֹפִיס","🏢"],["oil","שמן","אוֹיְל","🛢️"]],
+P:[["pizza","פיצה","פִּיצָה","🍕"],["pig","חזיר","פִּיג","🐷"],["pencil","עיפרון","פֶּנְסִיל","✏️"],["park","פארק","פָּארְק","🌳"],["plane","מטוס","פְּלֵיין","✈️"],["pink","ורוד","פִּינְק","🩷"],["potato","תפוח אדמה","פּוֹטֵייטוֹ","🥔"],["panda","פנדה","פֶּנְדָה","🐼"],["present","מתנה","פְּרֶזֶנְט","🎁"],["penguin","פינגווין","פֶּנְגְוִוין","🐧"]],
+Q:[["queen","מלכה","קְוִוין","👑"],["question","שאלה","קְוֶוסְצֶ'ן","❓"],["quiet","שקט","קְוָואיֶט","🤫"],["quick","מהיר","קְוִויק","⚡"],["quilt","שמיכה","קְוִוילְט","🛏️"],["quarter","רבע","קְווֹרְטֶר","🪙"],["quiz","חידון","קְוִויז","📝"],["queue","תור","קְיוּ","🚶"],["quail","שליו","קְוֵוייל","🐦"],["quack","גַּע-גַּע של ברווז","קְוָואק","🦆"]],
+R:[["rabbit","ארנב","רֶבִּיט","🐰"],["rain","גשם","רֵיין","🌧️"],["red","אדום","רֶד","🔴"],["river","נהר","רִיבֶר","🏞️"],["robot","רובוט","רוֹבּוֹט","🤖"],["ring","טבעת","רִינְג","💍"],["road","כביש","רוֹאוּד","🛣️"],["rose","ורד","רוֹאוּז","🌹"],["run","לרוץ","רָאן","🏃"],["rice","אורז","רַייס","🍚"]],
+S:[["sun","שמש","סָאן","☀️"],["star","כוכב","סְטָאר","⭐"],["snake","נחש","סְנֵייק","🐍"],["school","בית ספר","סְקוּל","🏫"],["shoe","נעל","שוּ","👟"],["snow","שלג","סְנוֹאוּ","❄️"],["sister","אחות","סִיסְטֶר","👧"],["sea","ים","סִי","🌊"],["six","שש","סִיקְס","6️⃣"],["sandwich","כריך","סֶנְדְוִויץ'","🥪"]],
+T:[["tree","עץ","טְרִי","🌳"],["tiger","נמר","טָייגֶר","🐯"],["table","שולחן","טֵייבְּל","🪑"],["train","רכבת","טְרֵיין","🚂"],["two","שתיים","טוּ","2️⃣"],["teacher","מורה","טִיצֶ'ר","👩‍🏫"],["tomato","עגבנייה","טוֹמֵייטוֹ","🍅"],["toy","צעצוע","טוֹי","🧸"],["turtle","צב","טֶרְטְל","🐢"],["ten","עשר","טֶן","🔟"]],
+U:[["umbrella","מטרייה","אַמְבְּרֶלָה","☂️"],["under","מתחת","אַנְדֶר","⬇️"],["up","למעלה","אַפּ","⬆️"],["uncle","דוד","אַנְקְל","👨"],["unicorn","חד-קרן","יוּנִיקוֹרְן","🦄"],["uniform","מדים","יוּנִיפוֹרְם","👕"],["ugly","מכוער","אַגְלִי","😖"],["use","להשתמש","יוּז","🔧"],["upstairs","למעלה במדרגות","אַפְּסְטֶרְז","🪜"],["universe","יקום","יוּנִיבֶרְס","🌌"]],
+V:[["van","ואן","וָואן","🚐"],["vegetable","ירק","וֶגֶ'טָבְּל","🥦"],["violin","כינור","וָויוֹלִין","🎻"],["volcano","הר געש","ווֹלְקֵיינוֹ","🌋"],["vase","אגרטל","וֵוייז","🏺"],["video","וידאו","וִידֵאוֹ","📹"],["village","כפר","וִילֶג'","🏘️"],["visit","לבקר","וִיזִיט","🚪"],["voice","קול","ווֹייס","🗣️"],["vet","וטרינר","וֶט","👩‍⚕️"]],
+W:[["water","מים","ווֹטֶר","💧"],["window","חלון","וִינְדוֹאוּ","🪟"],["watch","שעון יד","ווֹטְש","⌚"],["wolf","זאב","ווּלְף","🐺"],["wind","רוח","וִוינְד","🌬️"],["white","לבן","וַוייט","⚪"],["worm","תולעת","ווֹרְם","🪱"],["wall","קיר","ווֹל","🧱"],["week","שבוע","וִויק","📅"],["wet","רטוב","וֶוט","💦"]],
+X:[["x-ray","צילום רנטגן","אֶקְס-רֵיי","🩻"],["xylophone","קסילופון","זָיילוֹפוֹן","🎹"],["box","קופסה","בּוֹקְס","📦"],["fox","שועל","פוֹקְס","🦊"],["six","שש","סִיקְס","6️⃣"],["fix","לתקן","פִיקְס","🔧"],["mix","לערבב","מִיקְס","🥄"],["taxi","מונית","טָקְסִי","🚕"],["exit","יציאה","אֶקְזִיט","🚪"],["next","הבא","נֶקְסְט","➡️"]],
+Y:[["yellow","צהוב","יֶילוֹאוּ","🟡"],["yes","כן","יֶס","✅"],["yogurt","יוגורט","יוֹגֶרְט","🥛"],["year","שנה","יִיר","📅"],["young","צעיר","יָאנְג","👶"],["yard","חצר","יַארְד","🏡"],["yawn","פיהוק","יוֹן","🥱"],["yo-yo","יו-יו","יוֹ-יוֹ","🪀"],["yummy","טעים","יָאמִי","😋"],["you","את / אתה","יוּ","👉"]],
+Z:[["zebra","זברה","זֶבְּרָה","🦓"],["zoo","גן חיות","זוּ","🦁"],["zero","אפס","זִירוֹ","0️⃣"],["zigzag","זיגזג","זִיגְזֶג","⚡"],["zip","רוכסן","זִיפּ","🤐"],["zone","אזור","זוֹן","📍"],["zoom","להתקרב","זוּם","🔍"],["pizza","פיצה","פִּיצָה","🍕"],["lazy","עצלן","לֵייזִי","😴"],["puzzle","פאזל","פָּאזֶל","🧩"]]
+};
+
+const NUMS = [[1,"one","וָואן","אחת"],[2,"two","טוּ","שתיים"],[3,"three","תְ'רִי","שלוש"],[4,"four","פוֹר","ארבע"],[5,"five","פָייב","חמש"],
+[6,"six","סִיקְס","שש"],[7,"seven","סֶבֶן","שבע"],[8,"eight","אֵייט","שמונה"],[9,"nine","נַיין","תשע"],[10,"ten","טֶן","עשר"],
+[11,"eleven","אִילֶבֶן","אחת עשרה"],[12,"twelve","טְוֶולְב","שתים עשרה"],[13,"thirteen","תְ'רְטִין","שלוש עשרה"],[14,"fourteen","פוֹרְטִין","ארבע עשרה"],[15,"fifteen","פִיפְטִין","חמש עשרה"],
+[16,"sixteen","סִיקְסְטִין","שש עשרה"],[17,"seventeen","סֶבֶנְטִין","שבע עשרה"],[18,"eighteen","אֵייטִין","שמונה עשרה"],[19,"nineteen","נַיינְטִין","תשע עשרה"],[20,"twenty","טְוֶונְטִי","עשרים"],
+[30,"thirty","תְ'רְטִי","שלושים"],[40,"forty","פוֹרְטִי","ארבעים"],[50,"fifty","פִיפְטִי","חמישים"],[60,"sixty","סִיקְסְטִי","שישים"],[70,"seventy","סֶבֶנְטִי","שבעים"],
+[80,"eighty","אֵייטִי","שמונים"],[90,"ninety","נַיינְטִי","תשעים"],[100,"one hundred","וָואן הָאנְדְרֶד","מאה"]];
+
+const COLORS = [["red","רֶד","אדום","#E8454F"],["blue","בְּלוּ","כחול","#2F6FE4"],["yellow","יֶילוֹאוּ","צהוב","#FFC631"],
+["green","גְרִין","ירוק","#1FA971"],["orange","אוֹרֶנְג'","כתום","#F2832B"],["purple","פֶּרְפְּל","סגול","#8A4FD3"],
+["pink","פִּינְק","ורוד","#FF7FB0"],["brown","בְּרָאוּן","חום","#8B5E3C"],["black","בְּלֶק","שחור","#222733"],
+["white","וַוייט","לבן","#F2F4FA"],["gray","גְרֵיי","אפור","#9AA3B8"]];
+
+const SENT = {
+greet:[["Hello!","הֶלוֹאוּ","שלום!"],["Good morning","גוּד מוֹרְנִינְג","בוקר טוב"],["Good night","גוּד נַייט","לילה טוב"],
+["How are you?","הָאוּ אַר יוּ","מה שלומך?"],["I am fine, thank you","אַיי אֶם פָיין, תֶ'נְק יוּ","אני בסדר, תודה"],
+["What is your name?","ווֹט אִיז יוֹר נֵים","איך קוראים לך?"],["Nice to meet you","נַייס טוּ מִיט יוּ","נעים להכיר"],
+["Goodbye!","גוּדְבַּיי","להתראות!"],["See you tomorrow","סִי יוּ טוֹמוֹרוֹאוּ","נתראה מחר"],["Have a nice day","הָאב אֶה נַייס דֵיי","שיהיה לך יום נעים"]],
+me:[["My name is Noa","מַיי נֵים אִיז נוֹעָה","קוראים לי נועה"],["I am nine years old","אַיי אֶם נַיין יִירְז אוֹלְד","אני בת תשע"],
+["I am from Israel","אַיי אֶם פְרוֹם אִיזְרָאֶל","אני מישראל"],["I have a brother","אַיי הָאב אֶה בְּרָאדֶ'ר","יש לי אח"],
+["This is my mom","דִ'יס אִיז מַיי מָאם","זאת אמא שלי"],["I like pizza","אַיי לַייק פִּיצָה","אני אוהבת פיצה"],
+["I do not like onions","אַיי דוּ נוֹט לַייק אָנְיוֹנְז","אני לא אוהבת בצל"],["My favorite color is blue","מַיי פֵייבוֹרִיט קָאלוֹר אִיז בְּלוּ","הצבע האהוב עליי הוא כחול"],
+["I go to school","אַיי גוֹאוּ טוּ סְקוּל","אני הולכת לבית ספר"],["I have a cat","אַיי הָאב אֶה קָאט","יש לי חתול"]],
+class:[["What is this?","ווֹט אִיז דִ'יס","מה זה?"],["I do not understand","אַיי דוּ נוֹט אַנְדֶרְסְטֶנְד","אני לא מבינה"],
+["Can you help me?","קֶן יוּ הֶלְפּ מִי","אפשר לעזור לי?"],["Open your book","אוֹפֶּן יוֹר בּוּק","פתחו את הספר"],
+["Sit down, please","סִיט דָאוּן, פְּלִיז","שבו בבקשה"],["Listen to me","לִיסֶן טוּ מִי","הקשיבו לי"],
+["I am finished","אַיי אֶם פִינִישְט","סיימתי"],["What time is it?","ווֹט טַיים אִיז אִיט","מה השעה?"],
+["I am hungry","אַיי אֶם הָאנְגְרִי","אני רעבה"],["Let us play!","לֶטְס פְּלֵיי","בואו נשחק!"]]
+};
+
+/* זמני פועל: [הווה פשוט, הווה ממשיך, עבר, עתיד, עברית-בסיס, אימוג'י] */
+const VERBS = [
+ ["I eat an apple","I am eating an apple","I ate an apple","I will eat an apple","לאכול תפוח","🍎"],
+ ["I play with my friend","I am playing with my friend","I played with my friend","I will play with my friend","לשחק עם חבר","⚽"],
+ ["I read a book","I am reading a book","I read a book","I will read a book","לקרוא ספר","📚"],
+ ["I drink water","I am drinking water","I drank water","I will drink water","לשתות מים","💧"],
+ ["I go to school","I am going to school","I went to school","I will go to school","ללכת לבית ספר","🏫"],
+ ["I run in the park","I am running in the park","I ran in the park","I will run in the park","לרוץ בפארק","🏃"],
+ ["I sleep at night","I am sleeping now","I slept at night","I will sleep at night","לישון","😴"],
+ ["I write with a pencil","I am writing with a pencil","I wrote with a pencil","I will write with a pencil","לכתוב בעיפרון","✏️"]
+];
+const TENSE = [
+ {k:0, name:"הווה פשוט",  when:"every day",  whenHe:"כל יום",  icon:"🔁"},
+ {k:1, name:"הווה ממשיך", when:"now",        whenHe:"עכשיו",   icon:"⏱️"},
+ {k:2, name:"עבר",        when:"yesterday",  whenHe:"אתמול",   icon:"⏪"},
+ {k:3, name:"עתיד",       when:"tomorrow",   whenHe:"מחר",     icon:"⏩"}
+];
+
+/* ========================= כלים ========================= */
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const rnd = n => Math.floor(Math.random()*n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function others(pool, n, not){ return shuffle(pool.filter(x=>x!==not)).slice(0,n); }
+
+const word = a => ({en:a[0], he:a[1], tr:a[2], e:a[3]});
+const ALLWORDS = [];
+ALPHA.forEach(L => W[L].forEach(a => ALLWORDS.push(word(a))));
+
+/* שמירה */
+const KEY = "masa-anglit-v2";
+let save = {res:{}, sound:true};
+try{ const raw = localStorage.getItem(KEY); if(raw) save = Object.assign(save, JSON.parse(raw)); }catch(e){}
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(save)); }catch(e){} }
+const best = id => save.res[id] || 0;              /* ציון 0-100 */
+const starsFor = s => s>=90?3 : s>=70?2 : s>=50?1 : 0;
+const passed = id => best(id) >= 50;
+
+/* דיבור */
+/* אות בודדת נשלחת כשם האות בלבד — אחרת מנוע הדיבור מקריא "capital A" */
+const SAYLETTER = {a:"ay",b:"bee",c:"see",d:"dee",e:"ee",f:"eff",g:"jee",h:"aitch",i:"eye",
+j:"jay",k:"kay",l:"ell",m:"em",n:"en",o:"oh",p:"pee",q:"cue",r:"ar",s:"ess",t:"tee",
+u:"you",v:"vee",w:"double you",x:"ex",y:"why",z:"zee"};
+
+function speak(text){
+  if(!save.sound || !text) return;
+  try{
+    window.speechSynthesis.cancel();
+    const raw = String(text);
+    const say = /^[a-z]$/i.test(raw) ? SAYLETTER[raw.toLowerCase()] : raw.replace(/-/g," ");
+    const u = new SpeechSynthesisUtterance(say);
+    u.lang="en-US"; u.rate=0.75; u.pitch=1.05;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+let actx=null;
+function beep(f,when,dur,type){
+  if(!save.sound) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==="suspended") actx.resume();
+    const o=actx.createOscillator(), g=actx.createGain(), t=actx.currentTime+when;
+    o.type=type||"triangle"; o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(.2,t+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t+dur+.05);
+  }catch(e){}
+}
+const sndGood=()=>{beep(660,0,.14);beep(880,.1,.2)};
+const sndBad =()=>beep(200,0,.22,"sawtooth");
+const sndWin =()=>[523,659,784,1047].forEach((f,i)=>beep(f,i*.13,.3));
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const box=$("#confetti"), colors=["#FF5C8A","#19BFA3","#FFB726","#7A5CFF","#3C9DF2"];
+  for(let i=0;i<70;i++){
+    const s=document.createElement("span");
+    s.style.background=colors[i%colors.length];
+    s.style.left=Math.random()*100+"vw"; s.style.top="-30px";
+    s.style.animationDuration=(1.6+Math.random()*1.4)+"s";
+    s.style.animationDelay=(Math.random()*.5)+"s";
+    box.appendChild(s); setTimeout(()=>s.remove(),3600);
+  }
+}
+
+/* ========================= בוני שאלות ========================= */
+function qPic(w, pool){
+  return {ask:"איך קוראים לזה באנגלית?",
+    stage:`<div class="emoji">${w.e}</div><div class="sub">${esc(w.he)}</div>`,
+    options: shuffle([w.en, ...others(pool.map(x=>x.en),3,w.en)]),
+    answer:w.en, optClass:"en", sayAfter:w.en, review:w};
+}
+function qEnHe(w, pool){
+  return {ask:"מה הפירוש בעברית?",
+    stage:`<div class="en wordbig">${esc(w.en)}</div><button class="speaker small" id="say">🔊</button>`,
+    say:w.en, autoSay:true,
+    options: shuffle([w.he, ...others(pool.map(x=>x.he),3,w.he)]),
+    answer:w.he, review:w};
+}
+function qHeEn(w, pool){
+  return {ask:"איך אומרים את זה באנגלית?",
+    stage:`<div class="emoji" style="font-size:54px">${w.e}</div><div class="sentbig">${esc(w.he)}</div>`,
+    options: shuffle([w.en, ...others(pool.map(x=>x.en),3,w.en)]),
+    answer:w.en, optClass:"en", sayAfter:w.en, review:w};
+}
+function qHear(w, pool){
+  return {ask:"לחצי על הרמקול ובחרי את המילה ששמעת",
+    stage:`<button class="speaker" id="say">🔊</button>`,
+    say:w.en, autoSay:true,
+    options: shuffle([w.en, ...others(pool.map(x=>x.en),3,w.en)]),
+    answer:w.en, optClass:"en", review:w};
+}
+function qHearLetter(L){
+  return {ask:"לחצי על הרמקול ובחרי את האות ששמעת",
+    stage:`<button class="speaker" id="say">🔊</button>`,
+    say:L, autoSay:true,
+    options: shuffle([L, ...others(ALPHA,3,L)]),
+    answer:L, optClass:"letter"};
+}
+function qCase(L){
+  const up = Math.random()<.5;
+  const shown = up ? L : L.toLowerCase();
+  const want  = up ? L.toLowerCase() : L;
+  return {ask: up ? "איזו אות <b>קטנה</b> מתאימה?" : "איזו אות <b>גדולה</b> מתאימה?",
+    stage:`<div class="en bigletter">${shown}</div><button class="speaker small" id="say">🔊</button>`,
+    say:L,
+    options: shuffle([want, ...others(ALPHA,3,L).map(x=> up ? x.toLowerCase() : x)]),
+    answer:want, optClass:"letter"};
+}
+function qStarts(L, pool){
+  const mine = pool.filter(w => w.en.toLowerCase().startsWith(L.toLowerCase()));
+  if(!mine.length) return null;
+  const w = pick(mine);
+  const bad = ALLWORDS.filter(x => !x.en.toLowerCase().startsWith(L.toLowerCase()));
+  return {ask:`איזו מילה מתחילה באות <b class="en">${L}</b>?`,
+    stage:`<div class="en bigletter">${L} ${L.toLowerCase()}</div>`,
+    options: shuffle([w.en, ...others(bad.map(x=>x.en),3,w.en)]),
+    answer:w.en, optClass:"en", sayAfter:w.en, review:w};
+}
+function qMissing(w){
+  if(w.en.length<3 || /[^a-z]/i.test(w.en)) return null;
+  const i = rnd(w.en.length), ans = w.en[i].toLowerCase();
+  const blank = w.en.split("").map((c,k)=> k===i ? "_" : c).join(" ");
+  return {ask:"איזו אות חסרה במילה?",
+    stage:`<div class="emoji" style="font-size:52px">${w.e}</div>
+           <div class="en wordbig" style="letter-spacing:.06em">${blank}</div><div class="sub">${esc(w.he)}</div>`,
+    say:w.en, autoSay:true,
+    options: shuffle([ans, ...others(ALPHA.map(x=>x.toLowerCase()),3,ans)]),
+    answer:ans, optClass:"letter", review:w};
+}
+
+/* ========================= הגדרת השלבים ========================= */
+function letterLesson(L){
+  const ws = W[L].map(word);
+  return {
+    id:"L-"+L, chapter:"letters", icon:"🔤", c:"var(--sky)",
+    title:`האות ${L} ${L.toLowerCase()}`, sub:`${LNAME[L]} · ${ws.length} מילים`,
+    cards: [{type:"letter", L}].concat(ws.map(w => ({type:"word", w}))),
+    quiz(){
+      const qs = [qHearLetter(L), qCase(L)];
+      const four = shuffle(ws).slice(0,4);
+      qs.push(qPic(four[0], ws));
+      qs.push(qEnHe(four[1], ws));
+      qs.push(qHeEn(four[2], ws));
+      const s = qStarts(L, ws); if(s) qs.push(s);
+      const m = qMissing(four[3]); if(m) qs.push(m);
+      qs.push(qHear(pick(ws), ws));
+      return qs.slice(0,8);
+    }
+  };
+}
+
+function numberLesson(id, title, sub, from, to, icon){
+  const ns = NUMS.slice(from,to).map(a=>({n:a[0], en:a[1], tr:a[2], he:a[3], e:""}));
+  return {
+    id, chapter:"numbers", icon, c:"var(--mint)", title, sub,
+    cards: ns.map(n=>({type:"num", n})),
+    quiz(){
+      const qs=[];
+      shuffle(ns).slice(0,4).forEach(n=>{
+        qs.push({ask:"איך כותבים את המספר הזה באנגלית?",
+          stage:`<div class="numbig">${n.n}</div>`,
+          options: shuffle([n.en, ...others(ns.map(x=>x.en),3,n.en)]),
+          answer:n.en, optClass:"en", sayAfter:n.en, review:{en:n.en, he:n.he}});
+      });
+      shuffle(ns).slice(0,2).forEach(n=>{
+        qs.push({ask:"לחצי על הרמקול — איזה מספר שמעת?",
+          stage:`<button class="speaker" id="say">🔊</button>`, say:n.en, autoSay:true,
+          options: shuffle([String(n.n), ...others(ns.map(x=>String(x.n)),3,String(n.n))]),
+          answer:String(n.n), review:{en:n.en, he:n.he}});
+      });
+      shuffle(ns).slice(0,2).forEach(n=>{
+        qs.push({ask:"מה המספר הזה בעברית?",
+          stage:`<div class="en wordbig">${n.en}</div><button class="speaker small" id="say">🔊</button>`,
+          say:n.en, autoSay:true,
+          options: shuffle([n.he, ...others(ns.map(x=>x.he),3,n.he)]),
+          answer:n.he, review:{en:n.en, he:n.he}});
+      });
+      return shuffle(qs).slice(0,8);
+    }
+  };
+}
+
+const colorLesson = {
+  id:"C-1", chapter:"colors", icon:"🎨", c:"var(--sun)", title:"כל הצבעים", sub:"11 צבעים · איך קוראים להם",
+  cards: COLORS.map(c=>({type:"color", c:{en:c[0],tr:c[1],he:c[2],hex:c[3]}})),
+  quiz(){
+    const cs = COLORS.map(c=>({en:c[0],tr:c[1],he:c[2],hex:c[3]}));
+    const qs=[];
+    shuffle(cs).slice(0,4).forEach(c=>{
+      qs.push({ask:"איך קוראים לצבע הזה באנגלית?",
+        stage:`<div class="swatch" style="background:${c.hex}"></div>`,
+        options: shuffle([c.en, ...others(cs.map(x=>x.en),3,c.en)]),
+        answer:c.en, optClass:"en", sayAfter:c.en, review:{en:c.en, he:c.he}});
+    });
+    shuffle(cs).slice(0,2).forEach(c=>{
+      qs.push({ask:"מה הצבע הזה בעברית?",
+        stage:`<div class="en wordbig">${c.en}</div><button class="speaker small" id="say">🔊</button>`,
+        say:c.en, autoSay:true,
+        options: shuffle([c.he, ...others(cs.map(x=>x.he),3,c.he)]),
+        answer:c.he, review:{en:c.en, he:c.he}});
+    });
+    shuffle(cs).slice(0,2).forEach(c=>{
+      qs.push({ask:"לחצי על הרמקול ובחרי את הצבע ששמעת",
+        stage:`<button class="speaker" id="say">🔊</button>`, say:c.en, autoSay:true,
+        options: shuffle([c, ...others(cs,3,c)]).map(x=>x.hex),
+        answer:c.hex, swatchOpts:true, review:{en:c.en, he:c.he}});
+    });
+    return shuffle(qs).slice(0,8);
+  }
+};
+
+function sentenceLesson(id, key, title, sub, icon){
+  const ss = SENT[key].map(a=>({en:a[0], tr:a[1], he:a[2]}));
+  return {
+    id, chapter:"sentences", icon, c:"var(--violet)", title, sub,
+    cards: ss.map(s=>({type:"sent", s})),
+    quiz(){
+      const qs=[];
+      shuffle(ss).slice(0,4).forEach(s=>{
+        qs.push({ask:"איך אומרים את המשפט הזה באנגלית?",
+          stage:`<div class="sentbig">${esc(s.he)}</div>`,
+          options: shuffle([s.en, ...others(ss.map(x=>x.en),3,s.en)]),
+          answer:s.en, optClass:"en sent", cols:1, sayAfter:s.en, review:{en:s.en, he:s.he}});
+      });
+      shuffle(ss).slice(0,2).forEach(s=>{
+        qs.push({ask:"מה פירוש המשפט בעברית?",
+          stage:`<div class="en sentbig">${esc(s.en)}</div><button class="speaker small" id="say">🔊</button>`,
+          say:s.en, autoSay:true,
+          options: shuffle([s.he, ...others(ss.map(x=>x.he),3,s.he)]),
+          answer:s.he, optClass:"sent", cols:1, review:{en:s.en, he:s.he}});
+      });
+      shuffle(ss).slice(0,2).forEach(s=>{
+        const parts = s.en.split(" ");
+        const i = rnd(parts.length);
+        const missing = parts[i];
+        const bank = ss.flatMap(x=>x.en.split(" ")).filter(w=>w!==missing);
+        qs.push({ask:"איזו מילה חסרה במשפט?",
+          stage:`<div class="en sentbig">${parts.map((p,k)=>k===i?"____":esc(p)).join(" ")}</div>
+                 <div class="he">${esc(s.he)}</div>`,
+          options: shuffle([missing, ...others([...new Set(bank)],3,missing)]),
+          answer:missing, optClass:"en", sayAfter:s.en, review:{en:s.en, he:s.he}});
+      });
+      return shuffle(qs).slice(0,8);
+    }
+  };
+}
+
+function tenseLesson(t){
+  return {
+    id:"V-"+t.k, chapter:"verbs", icon:t.icon, c:"var(--coral)",
+    title:t.name, sub:`מה קורה ${t.whenHe} · ${VERBS.length} משפטים`,
+    cards: VERBS.map(v=>({type:"verb", v, t})),
+    quiz(){
+      const qs=[];
+      shuffle(VERBS).slice(0,4).forEach(v=>{
+        qs.push({ask:`איך אומרים את זה בזמן <b>${t.name}</b>?`,
+          stage:`<div class="emoji" style="font-size:52px">${v[5]}</div>
+                 <div class="sentbig">${esc(v[4])} — ${t.whenHe}</div>`,
+          options: shuffle([v[t.k], ...others(v.filter((_,i)=>i<4), 3, v[t.k])]),
+          answer:v[t.k], optClass:"en sent", cols:1, sayAfter:v[t.k], review:{en:v[t.k], he:v[4]+" — "+t.whenHe}});
+      });
+      shuffle(VERBS).slice(0,4).forEach(v=>{
+        qs.push({ask:"לחצי על הרמקול ובחרי את המשפט ששמעת",
+          stage:`<button class="speaker" id="say">🔊</button>`, say:v[t.k], autoSay:true,
+          options: shuffle([v[t.k], ...others(v.filter((_,i)=>i<4), 3, v[t.k])]),
+          answer:v[t.k], optClass:"en sent", cols:1, review:{en:v[t.k], he:v[4]}});
+      });
+      return shuffle(qs).slice(0,8);
+    }
+  };
+}
+
+const mixedTense = {
+  id:"V-MIX", chapter:"verbs", icon:"🏆", c:"var(--coral)", title:"כל הזמנים ביחד", sub:"מבחן סיכום — בלי לימוד",
+  cards: [], quiz(){
+    const qs=[];
+    shuffle(VERBS).slice(0,8).forEach(v=>{
+      const t = pick(TENSE);
+      qs.push({ask:`מתי זה קורה? בחרי את המשפט ל<b>${t.whenHe}</b>`,
+        stage:`<div class="emoji" style="font-size:52px">${v[5]}</div><div class="sentbig">${esc(v[4])}</div>`,
+        options: shuffle([v[0],v[1],v[2],v[3]]),
+        answer:v[t.k], optClass:"en sent", cols:1, sayAfter:v[t.k], review:{en:v[t.k], he:v[4]+" — "+t.whenHe}});
+    });
+    return qs;
+  }
+};
+
+const bigLetterTest = {
+  id:"L-TEST", chapter:"letters", icon:"🏆", c:"var(--coral)", title:"מבחן האותיות", sub:"כל מה שלמדת — בלי לימוד",
+  cards: [], quiz(){
+    const qs=[];
+    shuffle(ALPHA).slice(0,4).forEach(L=>{ qs.push(qHearLetter(L)); });
+    shuffle(ALPHA).slice(0,2).forEach(L=>{ qs.push(qCase(L)); });
+    shuffle(ALLWORDS).slice(0,4).forEach(w=>{ qs.push(qPic(w, ALLWORDS)); });
+    return shuffle(qs).slice(0,10);
+  }
+};
+
+/* פרקים */
+const LESSONS = [].concat(
+  ALPHA.map(letterLesson),
+  [bigLetterTest],
+  [numberLesson("N-1","מספרים 1–5","חמישה ראשונים",0,5,"5️⃣"),
+   numberLesson("N-2","מספרים 6–10","עד עשר",5,10,"🔟"),
+   numberLesson("N-3","מספרים 11–20","המספרים הגדולים",10,20,"2️⃣0️⃣"),
+   numberLesson("N-4","עשרות ומאה","20, 30, 40 … 100",20,28,"💯")],
+  [colorLesson],
+  [sentenceLesson("S-1","greet","ברכות ושלום","איך פותחים שיחה","👋"),
+   sentenceLesson("S-2","me","לספר על עצמי","שם, גיל, מה אני אוהבת","🙋"),
+   sentenceLesson("S-3","class","בכיתה ובבית","משפטים לשימוש יומיומי","🏫")],
+  TENSE.map(tenseLesson),
+  [mixedTense]
+);
+const byId = id => LESSONS.find(l=>l.id===id);
+const inChapter = ch => LESSONS.filter(l=>l.chapter===ch);
+
+const CHAPTERS = [
+  {id:"letters",  name:"האותיות A–Z",  sub:"אות אות — גדולה, קטנה, והמילים שלה", icon:"🔤", c:"var(--sky)",    need:0},
+  {id:"numbers",  name:"מספרים",       sub:"מ-1 עד 100",                         icon:"🔢", c:"var(--mint)",   need:5},
+  {id:"colors",   name:"צבעים",        sub:"11 הצבעים הבסיסיים",                 icon:"🎨", c:"var(--sun)",    need:10},
+  {id:"sentences",name:"משפטים",       sub:"מה אומרים באמת בשיחה",               icon:"💬", c:"var(--violet)", need:18},
+  {id:"verbs",    name:"זמני פועל",    sub:"הווה, ממשיך, עבר ועתיד",             icon:"⏳", c:"var(--coral)",  need:26}
+];
+const lettersDone = () => ALPHA.filter(L => passed("L-"+L)).length;
+const chapOpen = ch => lettersDone() >= ch.need;
+
+/* נעילה בתוך פרק: לפי הסדר */
+function lessonOpen(lesson){
+  const list = inChapter(lesson.chapter);
+  const i = list.indexOf(lesson);
+  if(i === 0) return true;
+  return passed(list[i-1].id);
+}
+
+/* ========================= מסך בית ========================= */
+function renderHome(){
+  const total = LESSONS.reduce((s,l)=>s+starsFor(best(l.id)),0);
+  app.innerHTML = `
+    <div class="bar">
+      <h1>מסע האנגלית<small>לומדים, מתאמנים, ואז מבחן עם ציון</small></h1>
+      <div class="chip"><b>★</b> ${total}</div>
+      <button class="iconbtn" id="snd" aria-label="צליל">${save.sound?"🔔":"🔕"}</button>
+    </div>
+    <div class="chapters">
+      ${CHAPTERS.map(ch=>{
+        const list = inChapter(ch.id);
+        const done = list.filter(l=>passed(l.id)).length;
+        const open = chapOpen(ch);
+        return `<button class="chap ${open?"open":"locked"}" data-ch="${ch.id}" style="--c:${ch.c}">
+          <span class="ico">${open?ch.icon:"🔒"}</span>
+          <span class="txt">
+            <h3>${esc(ch.name)}</h3>
+            <p>${open?esc(ch.sub):`נפתח אחרי ${ch.need} אותיות (יש לך ${lettersDone()})`}</p>
+            ${open?`<span class="track"><i style="width:${Math.round(done/list.length*100)}%"></i></span>`:""}
+          </span>
+          ${open?`<span class="pct">${done}/${list.length}</span>`:""}
+        </button>`;
+      }).join("")}
+    </div>
+    <button class="reset" id="reset">התחלה מחדש (מאפס את כל ההתקדמות)</button>`;
+  app.querySelectorAll(".chap").forEach(b=>b.addEventListener("click",()=>renderChapter(b.dataset.ch)));
+  $("#snd").addEventListener("click",()=>{save.sound=!save.sound;persist();renderHome()});
+  $("#reset").addEventListener("click",()=>{
+    if(confirm("לאפס את כל ההתקדמות?")){ save.res={}; persist(); renderHome(); }
+  });
+  scrollTo(0,0);
+}
+
+/* ========================= מסך פרק ========================= */
+function renderChapter(chId){
+  const ch = CHAPTERS.find(c=>c.id===chId);
+  const list = inChapter(chId);
+
+  const body = chId==="letters"
+    ? `<div class="grid26">
+        ${list.map(l=>{
+          const open = lessonOpen(l), st = starsFor(best(l.id));
+          const L = l.id.slice(2);
+          const cls = !open?"locked": st>0?"done":"now";
+          return `<button class="ltile ${cls}" data-id="${l.id}" ${open?"":"disabled"}>
+            <span class="pair en">${open ? (L==="TEST" ? "🏆" : L+" "+L.toLowerCase()) : "🔒"}</span>
+            <span class="mini">${[1,2,3].map(i=>`<i class="${i<=st?"on":""}">★</i>`).join("")}</span>
+          </button>`;
+        }).join("")}
+       </div>`
+    : `<div class="lessons">
+        ${list.map(l=>{
+          const open = lessonOpen(l), st = starsFor(best(l.id));
+          return `<button class="lrow ${!open?"locked":st>0?"done":""}" data-id="${l.id}" style="--c:${l.c}" ${open?"":"disabled"}>
+            <span class="ico">${open?l.icon:"🔒"}</span>
+            <span class="txt" style="flex:1;min-width:0">
+              <h3>${esc(l.title)}</h3>
+              <p>${open?esc(l.sub):"נפתח אחרי השלב הקודם"}${open&&best(l.id)?` · ציון ${best(l.id)}`:""}</p>
+            </span>
+            <span class="mini">${[1,2,3].map(i=>`<i class="${i<=st?"on":""}">★</i>`).join("")}</span>
+          </button>`;
+        }).join("")}
+       </div>`;
+
+  app.innerHTML = `
+    <div class="bar">
+      <button class="iconbtn" id="home" aria-label="בית">←</button>
+      <h1>${esc(ch.name)}<small>${esc(ch.sub)}</small></h1>
+    </div>${body}`;
+  $("#home").addEventListener("click", renderHome);
+  app.querySelectorAll("[data-id]").forEach(b=>b.addEventListener("click",()=>openLesson(byId(b.dataset.id))));
+  scrollTo(0,0);
+}
+
+/* ========================= לימוד ========================= */
+let cur = null;
+
+function openLesson(lesson){
+  cur = {lesson, card:0};
+  lesson.cards.length ? renderCard() : startQuiz(lesson);
+}
+
+function cardHTML(c){
+  if(c.type==="letter"){
+    return `<div class="en pairbig">${c.L}<span class="lo">${c.L.toLowerCase()}</span></div>
+            <div class="lname">אומרים: ${LNAME[c.L]}</div>
+            <button class="speaker" id="say">🔊</button>
+            <div class="he">זאת האות הגדולה <b class="en">${c.L}</b> והאות הקטנה <b class="en">${c.L.toLowerCase()}</b></div>`;
+  }
+  if(c.type==="word"){
+    const w=c.w;
+    return `<div class="emoji">${w.e}</div>
+            <div class="en wordbig">${esc(w.en)}</div>
+            <div class="tr">${esc(w.tr)}</div>
+            <div class="he">${esc(w.he)}</div>
+            <button class="speaker small" id="say">🔊</button>`;
+  }
+  if(c.type==="num"){
+    const n=c.n;
+    return `<div class="numbig">${n.n}</div>
+            <div class="en wordbig">${esc(n.en)}</div>
+            <div class="tr">${esc(n.tr)}</div>
+            <div class="he">${esc(n.he)}</div>
+            <button class="speaker small" id="say">🔊</button>`;
+  }
+  if(c.type==="color"){
+    const c2=c.c;
+    return `<div class="swatch" style="background:${c2.hex}"></div>
+            <div class="en wordbig">${esc(c2.en)}</div>
+            <div class="tr">${esc(c2.tr)}</div>
+            <div class="he">${esc(c2.he)}</div>
+            <button class="speaker small" id="say">🔊</button>`;
+  }
+  if(c.type==="sent"){
+    const s=c.s;
+    return `<div class="en sentbig">${esc(s.en)}</div>
+            <div class="tr">${esc(s.tr)}</div>
+            <div class="he">${esc(s.he)}</div>
+            <button class="speaker small" id="say">🔊</button>`;
+  }
+  if(c.type==="verb"){
+    const v=c.v, t=c.t;
+    return `<div class="emoji" style="font-size:52px">${v[5]}</div>
+            <div class="en sentbig">${esc(v[t.k])}</div>
+            <div class="he">${esc(v[4])} — <b>${t.whenHe}</b></div>
+            <div class="tr">${t.name}</div>
+            <button class="speaker small" id="say">🔊</button>`;
+  }
+  return "";
+}
+function cardSay(c){
+  if(c.type==="letter") return c.L;
+  if(c.type==="word")   return c.w.en;
+  if(c.type==="num")    return c.n.en;
+  if(c.type==="color")  return c.c.en;
+  if(c.type==="sent")   return c.s.en;
+  if(c.type==="verb")   return c.v[c.t.k];
+  return "";
+}
+
+function renderCard(){
+  const {lesson, card} = cur;
+  const c = lesson.cards[card], last = card === lesson.cards.length-1;
+  app.innerHTML = `
+    <div class="bar">
+      <button class="iconbtn" id="back" aria-label="חזרה">←</button>
+      <h1>${esc(lesson.title)}<small>לומדים — אחר כך מבחן</small></h1>
+      <div class="chip">📖 לימוד</div>
+    </div>
+    <div class="card">${cardHTML(c)}</div>
+    <div class="navrow">
+      <button class="nav" id="prev" ${card===0?"disabled":""}>→ הקודם</button>
+      <button class="nav ${last?"main":""}" id="next">${last?"אני מוכנה למבחן 📝":"הבא ←"}</button>
+    </div>
+    <p class="counter">${card+1} מתוך ${lesson.cards.length}</p>`;
+
+  $("#back").addEventListener("click",()=>{try{speechSynthesis.cancel()}catch(e){} renderChapter(lesson.chapter)});
+  const sb=$("#say"); if(sb) sb.addEventListener("click",()=>speak(cardSay(c)));
+  $("#prev").addEventListener("click",()=>{cur.card--;renderCard()});
+  $("#next").addEventListener("click",()=>{
+    if(last) startQuiz(lesson); else {cur.card++;renderCard()}
+  });
+  setTimeout(()=>speak(cardSay(c)),300);
+  scrollTo(0,0);
+}
+
+/* ========================= מבחן ========================= */
+let game=null;
+
+function startQuiz(lesson){
+  const qs = lesson.quiz().filter(Boolean);
+  game = {lesson, qs, i:0, marks:[], wrongList:[]};
+  renderQ();
+}
+
+function renderQ(){
+  if(game.i >= game.qs.length) return renderResult();
+  const q = game.qs[game.i];
+  game.locked=false;
+
+  const optHTML = q.swatchOpts
+    ? q.options.map(hex=>`<button class="opt" data-v="${hex}" style="padding:0"><span style="display:block;width:100%;height:58px;border-radius:12px;background:${hex}"></span></button>`).join("")
+    : q.options.map(o=>`<button class="opt ${q.optClass||""}" data-v="${esc(o)}">${esc(o)}</button>`).join("");
+
+  app.innerHTML = `
+    <div class="playhead">
+      <button class="iconbtn" id="back" aria-label="חזרה">←</button>
+      <div class="dots">${game.qs.map((_,k)=>{
+        const m=game.marks[k];
+        return `<span class="dot ${m===true?"hit":m===false?"miss":k===game.i?"now":""}"></span>`;
+      }).join("")}</div>
+      <div class="chip" style="font-size:13.5px">📝 ${esc(game.lesson.title)}</div>
+    </div>
+    <p class="ask">${q.ask}</p>
+    <div class="stage">${q.stage}</div>
+    <div class="opts${q.cols===1?" wide":""}">${optHTML}</div>
+    <div id="msg"></div>`;
+
+  $("#back").addEventListener("click",()=>{try{speechSynthesis.cancel()}catch(e){} renderChapter(game.lesson.chapter)});
+  const sb=$("#say"); if(sb) sb.addEventListener("click",()=>speak(q.say));
+  if(q.autoSay) setTimeout(()=>speak(q.say),350);
+
+  app.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>{
+    if(game.locked) return;
+    game.locked=true;
+    const right = b.dataset.v === q.answer;
+    app.querySelectorAll(".opt").forEach(x=>{
+      x.classList.add("dead");
+      if(x.dataset.v===q.answer) x.classList.add("right");
+      else if(x===b) x.classList.add("wrong");
+      else x.classList.add("fade");
+    });
+    answer(right,q);
+  }));
+  scrollTo(0,0);
+}
+
+function answer(right,q){
+  game.marks[game.i]=right;
+  if(!right && q.review) game.wrongList.push(q.review);
+  const praise=["יפה מאוד!","כל הכבוד!","מצוין!","נכון בדיוק!","איזה יופי!"];
+  const shown = q.swatchOpts ? (q.review?q.review.en:"") : q.answer;
+  $("#msg").innerHTML = right
+    ? `<div class="banner good">✅ ${pick(praise)}</div>`
+    : `<div class="banner bad">התשובה הנכונה: <span class="en">${esc(shown)}</span>${q.review&&q.review.he?` — ${esc(q.review.he)}`:""}</div>`;
+  right?sndGood():sndBad();
+  if(q.sayAfter) setTimeout(()=>speak(q.sayAfter),260);
+  app.querySelectorAll(".dot")[game.i].className = "dot "+(right?"hit":"miss");
+  setTimeout(()=>{game.i++;renderQ()}, right?1150:2200);
+}
+
+/* ========================= תוצאה ========================= */
+function renderResult(){
+  const L = game.lesson;
+  const correct = game.marks.filter(Boolean).length;
+  const score = Math.round(correct/game.qs.length*100);
+  const stars = starsFor(score);
+  const isBest = score > best(L.id);
+  if(isBest){ save.res[L.id]=score; persist(); }
+
+  const list = inChapter(L.chapter);
+  const next = list[list.indexOf(L)+1];
+  const col = score>=90?"var(--ok)" : score>=70?"var(--mint)" : score>=50?"var(--sun)" : "var(--no)";
+  const head = score>=90?"מצוין! כמעט הכול נכון" : score>=70?"יפה מאוד!" : score>=50?"עברת!" : "כדאי לחזור על השלב";
+
+  app.innerHTML = `
+    <div class="bar"><h1>${esc(L.title)}<small>תוצאות המבחן</small></h1></div>
+    <div class="result">
+      <div class="score" style="--c:${col}"><div><b>${score}</b><br><span>ציון</span></div></div>
+      <div class="bigstars">${[1,2,3].map(i=>`<i class="${i<=stars?"on":""}">★</i>`).join("")}</div>
+      <h2>${head}</h2>
+      <p>ענית נכון על ${correct} מתוך ${game.qs.length}${isBest?" · שיא חדש בשלב הזה!":""}</p>
+      ${game.wrongList.length?`
+        <div class="review">
+          <h4>כדאי לחזור על אלה:</h4>
+          <ul>${game.wrongList.map(w=>`
+            <li><button class="say" data-say="${esc(w.en)}">🔊</button>
+                <span><span class="wen en">${esc(w.en)}</span><br><span class="whe">${esc(w.he||"")}</span></span></li>`).join("")}
+          </ul>
+        </div>`:""}
+      <div class="actions">
+        ${stars>=1 && next ? `<button class="cta" id="next">לשלב הבא: ${esc(next.title)} ←</button>`:""}
+        ${L.cards.length ? `<button class="cta ghost" id="learn">📖 ללמוד שוב</button>`:""}
+        <button class="cta ghost" id="again">${stars?"מבחן נוסף":"לנסות שוב"}</button>
+        <button class="cta ghost" id="map">חזרה לרשימה</button>
+      </div>
+    </div>`;
+
+  if(stars>=2){ sndWin(); confetti(); }
+  app.querySelectorAll(".say").forEach(b=>b.addEventListener("click",()=>speak(b.dataset.say)));
+  const on=(id,fn)=>{const e=$("#"+id); if(e) e.addEventListener("click",fn)};
+  on("next", ()=>openLesson(next));
+  on("learn",()=>openLesson(L));
+  on("again",()=>startQuiz(L));
+  on("map",  ()=>renderChapter(L.chapter));
+  scrollTo(0,0);
+}
+
+renderHome();
+</script>
